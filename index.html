@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gym Management Portal</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="login-container" id="loginPage">
+      <div class="login-card">
+        <h1>🏋️ Gym Portal Login</h1>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <select id="role">
+          <option value="receptionist">Receptionist</option>
+          <option value="manager">Manager</option>
+          <option value="trainer">Trainer</option>
+        </select>
+        <button onclick="login()">Login</button>
+      </div>
+    </div>
+
+    <div class="app-container hidden" id="app">
+      <header>
+        <h2>Gym Customer Management</h2>
+        <button onclick="toggleDarkMode()">🌗</button>
+        <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+      </header>
+
+      <section id="addCustomerSection">
+        <button id="openAddCustomerModal">➕ Add Customer</button>
+      </section>
+
+      <!-- Popup Modal -->
+      <div class="modal hidden" id="addCustomerModal">
+        <div class="modal-content">
+          <span class="close-button" id="closeModal">&times;</span>
+          <h3>Add New Customer</h3>
+
+          <input type="text" id="newName" placeholder="Name" />
+          <select id="newGender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="number" id="newPno" placeholder="Age" />
+          <input
+            type="text"
+            id="newPhonePersonal"
+            placeholder="Personal Phone"
+          />
+          <input type="text" id="newEpo" placeholder="Emergency Phone" />
+          <input type="text" id="newAddress" placeholder="Address" />
+          <input type="text" id="newPlan" placeholder="Plan Type" />
+          <input type="date" id="newLstPay" placeholder="Last Payment Date" />
+          <input
+            type="text"
+            id="newSubscription"
+            placeholder="Subscription Type"
+          />
+          <input
+            type="text"
+            id="newEpb"
+            placeholder="Equipment Borrowed (comma-separated)"
+          />
+          <button onclick="addCustomer()">Add Customer</button>
+        </div>
+      </div>
+
+      <section id="customerControls">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="🔍 Search customers..."
+        />
+      </section>
+
+      <section id="paginationControls"></section>
+
+      <section id="customerList">
+        <h3>Customer List</h3>
+        <input type="file" id="jsonFileInput" accept=".json" />
+        <table id="customerTable">
+          <thead>
+            <tr>
+              <th onclick="sortTable('name')">Name</th>
+              <th onclick="sortTable('gender')">Gender</th>
+              <th onclick="sortTable('age')">Age</th>
+              <th onclick="sortTable('phone.personal')">Personal Phone</th>
+              <th onclick="sortTable('phone.emergency')">Emergency Phone</th>
+              <th onclick="sortTable('address')">Address</th>
+              <th onclick="sortTable('plan_type')">Plan Type</th>
+              <th onclick="sortTable('last_payment')">Last Payment</th>
+              <th onclick="sortTable('subscription_type')">Subscription</th>
+              <th onclick="sortTable('equipment_borrowed')">
+                Equipment Borrowed
+              </th>
+            </tr>
+          </thead>
+          <tbody id="list"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
