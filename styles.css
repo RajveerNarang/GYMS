@@ -115,7 +115,7 @@ header {
   border: 1px solid #555;
 }
 
-/* CUSTOMER LIST (ul#list) */
+/* CUSTOMER LIST */
 #list {
   margin-top: 20px;
   list-style: none;
@@ -324,13 +324,11 @@ header {
 /* -------------------- */
 
 @media (max-width: 768px) {
-  /* Login Card */
   .login-card {
     width: 90%;
     padding: 1.5rem;
   }
 
-  /* App Container */
   .app-container {
     padding: 1rem;
   }
@@ -341,7 +339,6 @@ header {
     gap: 1rem;
   }
 
-  /* Controls */
   #customerControls {
     flex-direction: column;
     align-items: stretch;
@@ -351,13 +348,11 @@ header {
     width: 100%;
   }
 
-  /* Modal */
   .modal-content {
     width: 95%;
     padding: 15px;
   }
 
-  /* Table */
   #customerTable th,
   #customerTable td {
     font-size: 0.9rem;
@@ -395,11 +390,47 @@ header {
     font-size: 18px;
   }
 
-  #customerTable {
-    font-size: 0.85rem;
+  #customerTable,
+  #customerTable thead,
+  #customerTable tbody,
+  #customerTable tr,
+  #customerTable th,
+  #customerTable td {
+    display: block;
+    width: 100%;
   }
 
-  #paginationControls {
-    font-size: 0.9rem;
+  #customerTable thead {
+    display: none;
+  }
+
+  #customerTable tr {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: var(--card);
+  }
+
+  #customerTable td {
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  #customerTable td::before {
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+    content: attr(data-label);
+    color: var(--accent);
+  }
+
+  .dark-mode #customerTable td::before {
+    color: #bca89e;
   }
 }
