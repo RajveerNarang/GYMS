@@ -318,3 +318,88 @@ header {
 .dark-mode #customerTable tr:hover {
   background-color: #44403c;
 }
+
+/* -------------------- */
+/* Responsive Styles    */
+/* -------------------- */
+
+@media (max-width: 768px) {
+  /* Login Card */
+  .login-card {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  /* App Container */
+  .app-container {
+    padding: 1rem;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Controls */
+  #customerControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #searchInput {
+    width: 100%;
+  }
+
+  /* Modal */
+  .modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+
+  /* Table */
+  #customerTable th,
+  #customerTable td {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  .pagination-btn {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .login-card input,
+  .login-card select,
+  .login-card button {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  #openAddCustomerModal {
+    width: 100%;
+  }
+
+  .modal-content button {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .close-button {
+    font-size: 18px;
+  }
+
+  #customerTable {
+    font-size: 0.85rem;
+  }
+
+  #paginationControls {
+    font-size: 0.9rem;
+  }
+}
