@@ -52,6 +52,7 @@ window.login = function () {
   const credentials = {
     receptionist: { username: "reception", password: "reception123" },
     manager: { username: "manager", password: "manager123" },
+    trainer: { username: "trainer", password: "trainer123" },
     trainer: { username: "vikram rana", password: "trainer123" },
   };
 
