@@ -1,16 +1,16 @@
 /* GENERAL STYLES */
 :root {
   --bg: #f4f1ee;
-  --text: #2f2f2f;
-  --accent: #8d6e63;
-  --card: #d7ccc8;
+  --text: #2e2b28;
+  --accent: #8b5e3c;
+  --card: #eae3d2;
 }
 
 .dark-mode {
-  --bg: #2f2f2f;
+  --bg: #1f1c1a;
   --text: #f4f1ee;
-  --accent: #a1887f;
-  --card: #4e342e;
+  --accent: #d2a679;
+  --card: #2e2620;
 }
 
 body {
@@ -33,12 +33,13 @@ body {
   background: var(--card);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 1rem;
   width: 300px;
   text-align: center;
+  transition: background 0.3s, color 0.3s;
 }
 
 .login-card h1 {
@@ -52,16 +53,24 @@ body {
   border: none;
   border-radius: 8px;
   font-size: 1rem;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .login-card button {
   background-color: var(--accent);
   color: white;
   cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
 }
 
 .login-card button:hover {
-  background-color: #7a574f;
+  background-color: #7b4c2f;
+  transform: translateY(-1px);
+}
+
+.login-card button:active {
+  transform: scale(0.98);
 }
 
 /* APP CONTAINER */
@@ -73,6 +82,13 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dark-mode header {
+  border-color: #444;
 }
 
 .hidden {
@@ -93,11 +109,16 @@ header {
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.1s;
 }
 
 #openAddCustomerModal:hover {
-  background-color: #755d53;
+  background-color: #7b4c2f;
+  transform: translateY(-1px);
+}
+
+#openAddCustomerModal:active {
+  transform: scale(0.98);
 }
 
 /* FILE INPUT */
@@ -127,7 +148,8 @@ header {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s;
 }
 
 .dark-mode #list li {
@@ -160,6 +182,7 @@ header {
   max-width: 500px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   position: relative;
+  transition: background 0.3s;
 }
 
 .modal-content input,
@@ -170,6 +193,7 @@ header {
   border: 1px solid #c2b5a3;
   border-radius: 5px;
   background-color: #fffaf3;
+  outline: none;
 }
 
 .modal-content button {
@@ -180,10 +204,16 @@ header {
   border-radius: 6px;
   margin-top: 10px;
   cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
 }
 
 .modal-content button:hover {
   background-color: #6e5548;
+  transform: translateY(-1px);
+}
+
+.modal-content button:active {
+  transform: scale(0.98);
 }
 
 .close-button {
@@ -213,6 +243,11 @@ header {
 
 .dark-mode .modal-content button:hover {
   background-color: #6a5737;
+}
+
+.dark-mode .login-card h1,
+.dark-mode .close-button {
+  color: var(--accent);
 }
 
 /* SEARCH AND PAGINATION */
@@ -252,10 +287,16 @@ header {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
 }
 
 .pagination-btn:hover {
   background-color: #6f584b;
+  transform: translateY(-1px);
+}
+
+.pagination-btn:active {
+  transform: scale(0.98);
 }
 
 .dark-mode .pagination-btn {
@@ -284,7 +325,7 @@ header {
 }
 
 #customerTable th {
-  background-color: #c0a96e;
+  background-color: #b68d60;
   color: #fff;
   font-weight: bold;
 }
@@ -294,7 +335,7 @@ header {
 }
 
 #customerTable tr:hover {
-  background-color: #e3dbc7;
+  background-color: #e7ddc7;
   transition: 0.2s;
 }
 
@@ -304,7 +345,7 @@ header {
 }
 
 .dark-mode #customerTable th {
-  background-color: #5a4e3c;
+  background-color: #5a4b38;
 }
 
 .dark-mode #customerTable td {
@@ -316,13 +357,34 @@ header {
 }
 
 .dark-mode #customerTable tr:hover {
-  background-color: #44403c;
+  background-color: #40362f;
+}
+
+.dark-mode #customerTable td::before {
+  color: #bca89e;
+}
+
+#tableActionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: var(--card);
+  /* border-radius: 8px; */
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-mode #tableActionsHeader {
+  background-color: #3d342f;
+  color: #eee;
 }
 
 /* -------------------- */
 /* Responsive Styles    */
 /* -------------------- */
-
 @media (max-width: 768px) {
   .login-card {
     width: 90%;
@@ -428,9 +490,5 @@ header {
     font-weight: bold;
     content: attr(data-label);
     color: var(--accent);
-  }
-
-  .dark-mode #customerTable td::before {
-    color: #bca89e;
   }
 }

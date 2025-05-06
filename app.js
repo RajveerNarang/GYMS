@@ -52,7 +52,7 @@ window.login = function () {
   const credentials = {
     receptionist: { username: "reception", password: "reception123" },
     manager: { username: "manager", password: "manager123" },
-    trainer: { username: "trainer", password: "trainer123" },
+    trainer: { username: "vikram rana", password: "trainer123" },
   };
 
   if (
@@ -68,6 +68,15 @@ window.login = function () {
     currentTrainerName = user;
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
+
+    if (role === "receptionist") {
+      document
+        .getElementById("openAddCustomerModal")
+        .classList.remove("hidden");
+    } else {
+      document.getElementById("openAddCustomerModal").classList.add("hidden");
+    }
+
     fetchCustomers();
   } else {
     alert("Invalid username or password for " + role);
@@ -81,6 +90,15 @@ window.addEventListener("DOMContentLoaded", () => {
     currentTrainerName = session.username;
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
+
+    if (currentUserRole === "receptionist") {
+      document
+        .getElementById("openAddCustomerModal")
+        .classList.remove("hidden");
+    } else {
+      document.getElementById("openAddCustomerModal").classList.add("hidden");
+    }
+
     fetchCustomers();
   }
 });
@@ -106,7 +124,6 @@ function fetchCustomers() {
     const data = snapshot.val();
     if (data) {
       currentData = Object.values(data);
-
       if (currentUserRole === "trainer") {
         filteredData = currentData.filter(
           (c) => c.trainer?.toLowerCase() === currentTrainerName.toLowerCase()
@@ -185,8 +202,18 @@ function displayTable() {
   const end = start + rowsPerPage;
   const pageData = filteredData.slice(start, end);
 
-  pageData.forEach((customer) => {
+  pageData.forEach((customer, index) => {
     const row = document.createElement("tr");
+
+    let actions = "";
+    if (currentUserRole === "manager") {
+      actions = `
+        <td>
+          <button onclick="editCustomer(${index})">Edit</button>
+          <button onclick="deleteCustomer(${index})">Delete</button>
+        </td>
+      `;
+    }
 
     row.innerHTML = `
       <td>${customer.name || ""}</td>
@@ -200,6 +227,7 @@ function displayTable() {
       <td>${customer.subscription_type || ""}</td>
       <td>${(customer.equipment_borrowed || []).join(", ")}</td>
       <td>${customer.trainer || ""}</td>
+      ${actions}
     `;
 
     tbody.appendChild(row);
@@ -238,7 +266,7 @@ window.addCustomer = function () {
   const lastPayment = document.getElementById("newLstPay")?.value.trim();
   const subscription = document.getElementById("newSubscription")?.value.trim();
   const epb = document.getElementById("newEpb")?.value.trim();
-  const trainer = document.getElementById("newTrainer")?.value.trim();
+
   if (
     !name ||
     !age ||
@@ -250,8 +278,7 @@ window.addCustomer = function () {
     !plan ||
     !lastPayment ||
     !subscription ||
-    !epb ||
-    !trainer
+    !epb
   ) {
     alert("Please fill all fields");
     return;
@@ -271,7 +298,7 @@ window.addCustomer = function () {
     last_payment: lastPayment,
     subscription_type: subscription,
     equipment_borrowed: epb.split(",").map((e) => e.trim()),
-    trainer: currentTrainerName, // Auto-assign current trainer
+    trainer: currentTrainerName,
   };
 
   currentData.push(newCustomer);
@@ -291,7 +318,6 @@ window.addCustomer = function () {
     "newLstPay",
     "newSubscription",
     "newEpb",
-    "newTrainer",
   ];
   fieldsToClear.forEach((id) => {
     const el = document.getElementById(id);
@@ -300,4 +326,19 @@ window.addCustomer = function () {
 
   document.getElementById("addCustomerModal").classList.add("hidden");
   alert("Customer added successfully.");
+};
+
+// Placeholder edit/delete functions
+window.editCustomer = function (index) {
+  alert(`Edit function not yet implemented. Row index: ${index}`);
+};
+
+window.deleteCustomer = function (index) {
+  if (confirm("Are you sure you want to delete this customer?")) {
+    const customerToDelete = filteredData[index];
+    currentData = currentData.filter((c) => c !== customerToDelete);
+    filteredData = [...currentData];
+    displayTable();
+    alert("Customer deleted.");
+  }
 };

@@ -58,7 +58,6 @@
           />
           <input type="text" id="newEpb" placeholder="Equipment Borrowed" />
           <input type="text" id="newTrainer" placeholder="Trainer Name" />
-
           <button onclick="addCustomer()">Add Customer</button>
         </div>
       </div>
@@ -92,6 +91,7 @@
                 Equipment Borrowed
               </th>
               <th onclick="sortTable('trainer')">Trainer</th>
+              <th id="tableActionsHeader" class="hidden">Actions</th>
             </tr>
           </thead>
           <tbody id="list"></tbody>
