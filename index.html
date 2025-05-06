@@ -32,26 +32,22 @@
         <button id="openAddCustomerModal">➕ Add Customer</button>
       </section>
 
-      <!-- Popup Modal -->
+      <!-- Modal -->
       <div class="modal hidden" id="addCustomerModal">
         <div class="modal-content">
           <span class="close-button" id="closeModal">&times;</span>
           <h3>Add New Customer</h3>
-
           <input type="text" id="newName" placeholder="Name" />
+          <input type="number" id="newAge" placeholder="Age" />
+          <input type="text" id="newMembership" placeholder="Membership Type" />
           <select id="newGender">
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
-          <input type="number" id="newPno" placeholder="Age" />
-          <input
-            type="text"
-            id="newPhonePersonal"
-            placeholder="Personal Phone"
-          />
-          <input type="text" id="newEpo" placeholder="Emergency Phone" />
+          <input type="text" id="newPho" placeholder="Personal Phone" />
+          <input type="text" id="newEpho" placeholder="Emergency Phone" />
           <input type="text" id="newAddress" placeholder="Address" />
           <input type="text" id="newPlan" placeholder="Plan Type" />
           <input type="date" id="newLstPay" placeholder="Last Payment Date" />
@@ -60,11 +56,9 @@
             id="newSubscription"
             placeholder="Subscription Type"
           />
-          <input
-            type="text"
-            id="newEpb"
-            placeholder="Equipment Borrowed (comma-separated)"
-          />
+          <input type="text" id="newEpb" placeholder="Equipment Borrowed" />
+          <input type="text" id="newTrainer" placeholder="Trainer Name" />
+
           <button onclick="addCustomer()">Add Customer</button>
         </div>
       </div>
@@ -97,6 +91,7 @@
               <th onclick="sortTable('equipment_borrowed')">
                 Equipment Borrowed
               </th>
+              <th onclick="sortTable('trainer')">Trainer</th>
             </tr>
           </thead>
           <tbody id="list"></tbody>

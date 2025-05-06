@@ -5,6 +5,8 @@ let currentData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 5;
+let currentUserRole = "";
+let currentTrainerName = "";
 
 function sortTable(key) {
   const keys = key.split(".");
@@ -58,7 +60,12 @@ window.login = function () {
     user === credentials[role].username &&
     pass === credentials[role].password
   ) {
-    localStorage.setItem("loggedInUser", JSON.stringify({ role }));
+    localStorage.setItem(
+      "loggedInUser",
+      JSON.stringify({ role, username: user })
+    );
+    currentUserRole = role;
+    currentTrainerName = user;
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
     fetchCustomers();
@@ -68,8 +75,10 @@ window.login = function () {
 };
 
 window.addEventListener("DOMContentLoaded", () => {
-  const session = localStorage.getItem("loggedInUser");
+  const session = JSON.parse(localStorage.getItem("loggedInUser"));
   if (session) {
+    currentUserRole = session.role;
+    currentTrainerName = session.username;
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
     fetchCustomers();
@@ -92,19 +101,22 @@ window.addEventListener("click", (e) => {
 });
 
 function fetchCustomers() {
-  // Example placeholder for Firebase fetch logic
   const customerRef = ref(db, "customers/");
   onValue(customerRef, (snapshot) => {
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-
     const data = snapshot.val();
     if (data) {
-      for (let key in data) {
-        const li = document.createElement("li");
-        li.textContent = `${data[key].name} - ${data[key].membership}`;
-        list.appendChild(li);
+      currentData = Object.values(data);
+
+      if (currentUserRole === "trainer") {
+        filteredData = currentData.filter(
+          (c) => c.trainer?.toLowerCase() === currentTrainerName.toLowerCase()
+        );
+      } else {
+        filteredData = [...currentData];
       }
+
+      currentPage = 1;
+      displayTable();
     }
   });
 }
@@ -120,7 +132,15 @@ document
       try {
         const data = JSON.parse(e.target.result);
         currentData = data;
-        filteredData = [...currentData];
+
+        if (currentUserRole === "trainer") {
+          filteredData = currentData.filter(
+            (c) => c.trainer?.toLowerCase() === currentTrainerName.toLowerCase()
+          );
+        } else {
+          filteredData = [...currentData];
+        }
+
         currentPage = 1;
         displayTable();
       } catch (error) {
@@ -132,7 +152,6 @@ document
 
 document.getElementById("searchInput").addEventListener("input", () => {
   const query = document.getElementById("searchInput").value.toLowerCase();
-
   filteredData = currentData.filter((customer) => {
     return (
       (customer.name && customer.name.toLowerCase().includes(query)) ||
@@ -150,10 +169,10 @@ document.getElementById("searchInput").addEventListener("input", () => {
       (customer.phone?.emergency &&
         customer.phone.emergency.toLowerCase().includes(query)) ||
       (customer.equipment_borrowed &&
-        customer.equipment_borrowed.join(", ").toLowerCase().includes(query))
+        customer.equipment_borrowed.join(", ").toLowerCase().includes(query)) ||
+      (customer.trainer && customer.trainer.toLowerCase().includes(query))
     );
   });
-
   currentPage = 1;
   displayTable();
 });
@@ -180,6 +199,7 @@ function displayTable() {
       <td>${customer.last_payment || ""}</td>
       <td>${customer.subscription_type || ""}</td>
       <td>${(customer.equipment_borrowed || []).join(", ")}</td>
+      <td>${customer.trainer || ""}</td>
     `;
 
     tbody.appendChild(row);
@@ -218,7 +238,7 @@ window.addCustomer = function () {
   const lastPayment = document.getElementById("newLstPay")?.value.trim();
   const subscription = document.getElementById("newSubscription")?.value.trim();
   const epb = document.getElementById("newEpb")?.value.trim();
-
+  const trainer = document.getElementById("newTrainer")?.value.trim();
   if (
     !name ||
     !age ||
@@ -230,7 +250,8 @@ window.addCustomer = function () {
     !plan ||
     !lastPayment ||
     !subscription ||
-    !epb
+    !epb ||
+    !trainer
   ) {
     alert("Please fill all fields");
     return;
@@ -250,6 +271,7 @@ window.addCustomer = function () {
     last_payment: lastPayment,
     subscription_type: subscription,
     equipment_borrowed: epb.split(",").map((e) => e.trim()),
+    trainer: currentTrainerName, // Auto-assign current trainer
   };
 
   currentData.push(newCustomer);
@@ -257,7 +279,6 @@ window.addCustomer = function () {
   currentPage = 1;
   displayTable();
 
-  // Clear fields
   const fieldsToClear = [
     "newName",
     "newAge",
@@ -270,6 +291,7 @@ window.addCustomer = function () {
     "newLstPay",
     "newSubscription",
     "newEpb",
+    "newTrainer",
   ];
   fieldsToClear.forEach((id) => {
     const el = document.getElementById(id);
