@@ -492,3 +492,53 @@ header {
     color: var(--accent);
   }
 }
+
+/* Action Buttons */
+
+/* ACTION BUTTONS */
+.action-buttons button {
+  padding: 6px 12px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Edit Button */
+.action-buttons button.edit-btn {
+  background-color: #6d9e78; /* Earthy green */
+  color: white;
+}
+
+.action-buttons button.edit-btn:hover {
+  background-color: #588763;
+}
+
+/* Delete Button */
+.action-buttons button.delete-btn {
+  background-color: #c75d5d; /* Earthy red */
+  color: white;
+}
+
+.action-buttons button.delete-btn:hover {
+  background-color: #a94444;
+}
+
+/* Dark mode tweaks */
+.dark-mode .action-buttons button.edit-btn {
+  background-color: #4f7b5a;
+}
+
+.dark-mode .action-buttons button.edit-btn:hover {
+  background-color: #3d6146;
+}
+
+.dark-mode .action-buttons button.delete-btn {
+  background-color: #a85a5a;
+}
+
+.dark-mode .action-buttons button.delete-btn:hover {
+  background-color: #8a4444;
+}

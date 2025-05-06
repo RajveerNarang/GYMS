@@ -69,7 +69,7 @@ window.login = function () {
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
 
-    if (role === "receptionist") {
+    if (role === "receptionist" || "manager") {
       document
         .getElementById("openAddCustomerModal")
         .classList.remove("hidden");
@@ -208,9 +208,9 @@ function displayTable() {
     let actions = "";
     if (currentUserRole === "manager") {
       actions = `
-        <td>
-          <button onclick="editCustomer(${index})">Edit</button>
-          <button onclick="deleteCustomer(${index})">Delete</button>
+        <td class="action-buttons">
+          <button class="edit-btn" onclick="editCustomer(${index})">Edit</button>
+          <button class="delete-btn" onclick="deleteCustomer(${index})">Delete</button>
         </td>
       `;
     }
