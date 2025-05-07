@@ -91,10 +91,6 @@ header {
   border-color: #444;
 }
 
-.hidden {
-  display: none;
-}
-
 /* ADD CUSTOMER BUTTON */
 #addCustomerSection {
   margin-top: 20px;
@@ -382,6 +378,10 @@ header {
   color: #eee;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* -------------------- */
 /* Responsive Styles    */
 /* -------------------- */
@@ -510,6 +510,7 @@ header {
 .action-buttons button.edit-btn {
   background-color: #6d9e78; /* Earthy green */
   color: white;
+  margin-bottom: 5px;
 }
 
 .action-buttons button.edit-btn:hover {

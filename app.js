@@ -8,6 +8,9 @@ const rowsPerPage = 5;
 let currentUserRole = "";
 let currentTrainerName = "";
 
+let isEditing = false;
+let editIndex = null;
+
 function sortTable(key) {
   const keys = key.split(".");
   const getValue = (obj) => keys.reduce((val, k) => val?.[k], obj);
@@ -92,7 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
 
-    if (currentUserRole === "receptionist") {
+    if (currentUserRole === "receptionist" || "manager") {
       document
         .getElementById("openAddCustomerModal")
         .classList.remove("hidden");
@@ -206,6 +209,12 @@ function displayTable() {
   pageData.forEach((customer, index) => {
     const row = document.createElement("tr");
 
+    if (currentUserRole === "manager") {
+      document.getElementById("tableActionsHeader")?.classList.remove("hidden");
+    } else {
+      document.getElementById("tableActionsHeader")?.classList.add("hidden");
+    }
+
     let actions = "";
     if (currentUserRole === "manager") {
       actions = `
@@ -267,6 +276,7 @@ window.addCustomer = function () {
   const lastPayment = document.getElementById("newLstPay")?.value.trim();
   const subscription = document.getElementById("newSubscription")?.value.trim();
   const epb = document.getElementById("newEpb")?.value.trim();
+  const trn = document.getElementById("newTrainer")?.value.trim();
 
   if (
     !name ||
@@ -279,13 +289,14 @@ window.addCustomer = function () {
     !plan ||
     !lastPayment ||
     !subscription ||
-    !epb
+    !epb ||
+    !trn
   ) {
     alert("Please fill all fields");
     return;
   }
 
-  const newCustomer = {
+  const updatedCustomer = {
     name,
     age: parseInt(age),
     membership,
@@ -302,12 +313,21 @@ window.addCustomer = function () {
     trainer: currentTrainerName,
   };
 
-  currentData.push(newCustomer);
+  if (isEditing && editIndex !== null) {
+    const originalCustomer = filteredData[editIndex];
+    const actualIndex = currentData.indexOf(originalCustomer);
+    currentData[actualIndex] = updatedCustomer;
+    alert("Customer updated successfully.");
+  } else {
+    currentData.push(updatedCustomer);
+    alert("Customer added successfully.");
+  }
+
   filteredData = [...currentData];
   currentPage = 1;
   displayTable();
 
-  const fieldsToClear = [
+  [
     "newName",
     "newAge",
     "newMembership",
@@ -319,19 +339,41 @@ window.addCustomer = function () {
     "newLstPay",
     "newSubscription",
     "newEpb",
-  ];
-  fieldsToClear.forEach((id) => {
+    "newTrainer",
+  ].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.value = "";
   });
 
+  isEditing = false;
+  editIndex = null;
   document.getElementById("addCustomerModal").classList.add("hidden");
-  alert("Customer added successfully.");
 };
 
 // Placeholder edit/delete functions
 window.editCustomer = function (index) {
-  alert(`Edit function not yet implemented. Row index: ${index}`);
+  const customer = filteredData[index];
+
+  document.getElementById("newName").value = customer.name || "";
+  document.getElementById("newAge").value = customer.age || "";
+  document.getElementById("newMembership").value = customer.membership || "";
+  document.getElementById("newGender").value = customer.gender || "";
+  document.getElementById("newPho").value = customer.phone?.personal || "";
+  document.getElementById("newEpho").value = customer.phone?.emergency || "";
+  document.getElementById("newAddress").value = customer.address || "";
+  document.getElementById("newPlan").value = customer.plan_type || "";
+  document.getElementById("newLstPay").value = customer.last_payment || "";
+  document.getElementById("newSubscription").value =
+    customer.subscription_type || "";
+  document.getElementById("newEpb").value = (
+    customer.equipment_borrowed || []
+  ).join(", ");
+  document.getElementById("newTrainer").value = customer.trainer || "";
+
+  isEditing = true;
+  editIndex = index;
+
+  document.getElementById("addCustomerModal").classList.remove("hidden");
 };
 
 window.deleteCustomer = function (index) {
