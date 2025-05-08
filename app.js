@@ -188,10 +188,109 @@ document.getElementById("searchInput").addEventListener("input", () => {
   displayTable();
 });
 
+// function displayTable() {
+//   const tbody = document.querySelector("#customerTable tbody");
+//   tbody.innerHTML = "";
+
+//   const start = (currentPage - 1) * rowsPerPage;
+//   const end = start + rowsPerPage;
+//   const pageData = filteredData.slice(start, end);
+
+//   pageData.forEach((customer, index) => {
+//     const row = document.createElement("tr");
+
+//     if (currentUserRole === "manager") {
+//       document.getElementById("tableActionsHeader")?.classList.remove("hidden");
+//     } else {
+//       document.getElementById("tableActionsHeader")?.classList.add("hidden");
+//     }
+
+//     let actions = "";
+//     if (currentUserRole === "manager") {
+//       actions = `
+//         <td class="action-buttons">
+//           <button class="edit-btn" onclick="editCustomer(${index})">Edit</button>
+//           <button class="delete-btn" onclick="deleteCustomer(${index})">Delete</button>
+//         </td>
+//       `;
+//     }
+
+//     row.innerHTML = `
+//       <td>${customer.name || ""}</td>
+//       <td>${customer.gender || ""}</td>
+//       <td>${customer.age || ""}</td>
+//       <td>${customer.phone?.personal || ""}</td>
+//       <td>${customer.phone?.emergency || ""}</td>
+//       <td>${customer.address || ""}</td>
+//       <td>${customer.plan_type || ""}</td>
+//       <td>${customer.last_payment || ""}</td>
+//       <td>${customer.subscription_type || ""}</td>
+//       <td>${(customer.equipment_borrowed || []).join(", ")}</td>
+//       <td>${customer.trainer || ""}</td>
+//       ${actions}
+//     `;
+
+//     tbody.appendChild(row);
+//   });
+
+//   renderPagination();
+// }
+
 function displayTable() {
+  const thead = document.querySelector("#customerTable thead tr");
   const tbody = document.querySelector("#customerTable tbody");
+
+  // Clear existing header and body
+  thead.innerHTML = "";
   tbody.innerHTML = "";
 
+  const isTrainer = currentUserRole === "trainer";
+
+  // Define column headers
+  const allHeaders = [
+    { label: "Name", key: "name" },
+    { label: "Gender", key: "gender" },
+    { label: "Age", key: "age" },
+    { label: "Personal Phone", key: "phone.personal" },
+    { label: "Emergency Phone", key: "phone.emergency" },
+    { label: "Address", key: "address" },
+    { label: "Plan Type", key: "plan_type" },
+    { label: "Last Payment", key: "last_payment" },
+    { label: "Subscription", key: "subscription_type" },
+    { label: "Equipment Borrowed", key: "equipment_borrowed" },
+    { label: "Trainer", key: "trainer" },
+  ];
+
+  const trainerHeaders = [
+    "name",
+    "gender",
+    "phone.personal",
+    "equipment_borrowed",
+    "trainer",
+  ];
+
+  // Filter headers based on role
+  const headersToUse = isTrainer
+    ? allHeaders.filter((h) => trainerHeaders.includes(h.key))
+    : allHeaders;
+
+  // Build thead
+  headersToUse.forEach((h) => {
+    const th = document.createElement("th");
+    th.textContent = h.label;
+    th.setAttribute("onclick", `sortTable('${h.key}')`);
+    thead.appendChild(th);
+  });
+
+  // If not trainer, show Actions column
+  if (!isTrainer) {
+    const th = document.createElement("th");
+    th.id = "tableActionsHeader";
+    th.textContent = "Actions";
+    thead.appendChild(th);
+  }
+
+  // Display rows
   const start = (currentPage - 1) * rowsPerPage;
   const end = start + rowsPerPage;
   const pageData = filteredData.slice(start, end);
@@ -199,36 +298,28 @@ function displayTable() {
   pageData.forEach((customer, index) => {
     const row = document.createElement("tr");
 
-    if (currentUserRole === "manager") {
-      document.getElementById("tableActionsHeader")?.classList.remove("hidden");
-    } else {
-      document.getElementById("tableActionsHeader")?.classList.add("hidden");
-    }
+    headersToUse.forEach((h) => {
+      const td = document.createElement("td");
+      const keys = h.key.split(".");
+      let value = keys.reduce((obj, key) => obj?.[key], customer);
 
-    let actions = "";
-    if (currentUserRole === "manager") {
-      actions = `
-        <td class="action-buttons">
-          <button class="edit-btn" onclick="editCustomer(${index})">Edit</button>
-          <button class="delete-btn" onclick="deleteCustomer(${index})">Delete</button>
-        </td>
+      if (Array.isArray(value)) {
+        value = value.join(", ");
+      }
+
+      td.textContent = value || "";
+      row.appendChild(td);
+    });
+
+    // Actions for manager only
+    if (!isTrainer && currentUserRole === "manager") {
+      const actionsTd = document.createElement("td");
+      actionsTd.innerHTML = `
+        <button class="edit-btn" onclick="editCustomer(${index})">Edit</button>
+        <button class="delete-btn" onclick="deleteCustomer(${index})">Delete</button>
       `;
+      row.appendChild(actionsTd);
     }
-
-    row.innerHTML = `
-      <td>${customer.name || ""}</td>
-      <td>${customer.gender || ""}</td>
-      <td>${customer.age || ""}</td>
-      <td>${customer.phone?.personal || ""}</td>
-      <td>${customer.phone?.emergency || ""}</td>
-      <td>${customer.address || ""}</td>
-      <td>${customer.plan_type || ""}</td>
-      <td>${customer.last_payment || ""}</td>
-      <td>${customer.subscription_type || ""}</td>
-      <td>${(customer.equipment_borrowed || []).join(", ")}</td>
-      <td>${customer.trainer || ""}</td>
-      ${actions}
-    `;
 
     tbody.appendChild(row);
   });
