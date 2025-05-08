@@ -55,7 +55,6 @@ window.login = function () {
   const credentials = {
     receptionist: { username: "reception", password: "reception123" },
     manager: { username: "manager", password: "manager123" },
-    trainer: { username: "trainer", password: "trainer123" },
     trainer: { username: "vikram rana", password: "trainer123" },
   };
 
@@ -73,7 +72,7 @@ window.login = function () {
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
 
-    if (role === "receptionist" || "manager") {
+    if (role === "receptionist" || role === "manager") {
       document
         .getElementById("openAddCustomerModal")
         .classList.remove("hidden");
@@ -86,26 +85,6 @@ window.login = function () {
     alert("Invalid username or password for " + role);
   }
 };
-
-window.addEventListener("DOMContentLoaded", () => {
-  const session = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (session) {
-    currentUserRole = session.role;
-    currentTrainerName = session.username;
-    document.getElementById("loginPage").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-
-    if (currentUserRole === "receptionist" || "manager") {
-      document
-        .getElementById("openAddCustomerModal")
-        .classList.remove("hidden");
-    } else {
-      document.getElementById("openAddCustomerModal").classList.add("hidden");
-    }
-
-    fetchCustomers();
-  }
-});
 
 window.logout = function () {
   localStorage.removeItem("loggedInUser");
