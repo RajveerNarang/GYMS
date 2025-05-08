@@ -314,6 +314,7 @@ function displayTable() {
     // Actions for manager only
     if (!isTrainer && currentUserRole === "manager") {
       const actionsTd = document.createElement("td");
+      actionsTd.className = "action-buttons";
       actionsTd.innerHTML = `
         <button class="edit-btn" onclick="editCustomer(${index})">Edit</button>
         <button class="delete-btn" onclick="deleteCustomer(${index})">Delete</button>
