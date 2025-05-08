@@ -95,8 +95,19 @@ const openBtn = document.getElementById("openAddCustomerModal");
 const closeBtn = document.getElementById("closeModal");
 const modal = document.getElementById("addCustomerModal");
 
-openBtn.addEventListener("click", () => modal.classList.remove("hidden"));
+openBtn.addEventListener("click", () => {
+  // Clear all input/select fields in the modal
+  const modalInputs = modal.querySelectorAll("input, select");
+  modalInputs.forEach((field) => {
+    field.value = "";
+  });
+
+  // Show the modal
+  modal.classList.remove("hidden");
+});
+
 closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+
 window.addEventListener("click", (e) => {
   if (e.target === modal) modal.classList.add("hidden");
 });
