@@ -1,4 +1,18 @@
-// import { db, ref, get, set, push, onValue } from "./firebaseConfig.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import {
+  doc,
+  getDoc,
+  getFirestore,
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+import {
+  ref,
+  onValue,
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+import { app, auth } from "./firebase-config.js";
+
+const db = getFirestore(app);
 
 let currentSort = { key: "", asc: true };
 let currentData = [];
@@ -47,42 +61,62 @@ function toggleDarkMode() {
 }
 window.toggleDarkMode = toggleDarkMode;
 
-window.login = function () {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-  const role = document.getElementById("role").value;
+window.login = async function () {
+  const email = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+  const selectedRole = document.getElementById("role").value;
 
-  const credentials = {
-    receptionist: { username: "reception", password: "reception123" },
-    manager: { username: "manager", password: "manager123" },
-    trainer: { username: "vikram rana", password: "trainer123" },
-  };
+  try {
+    // Step 1: Sign in with Firebase Auth
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const uid = userCredential.user.uid;
 
-  if (
-    credentials[role] &&
-    user === credentials[role].username &&
-    pass === credentials[role].password
-  ) {
+    // Step 2: Fetch user's role from Firestore
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (!userDoc.exists()) {
+      alert("User role not assigned in Firestore.");
+      return;
+    }
+
+    const userData = userDoc.data();
+    const assignedRole = userData.role;
+
+    if (assignedRole !== selectedRole) {
+      alert(
+        `Access denied. Your role is '${assignedRole}', not '${selectedRole}'.`
+      );
+      return;
+    }
+
+    // Login success
+    // alert(`Login successful as ${assignedRole}`);
     localStorage.setItem(
       "loggedInUser",
-      JSON.stringify({ role, username: user })
+      JSON.stringify({ role: assignedRole, uid })
     );
-    currentUserRole = role;
-    currentTrainerName = user;
+
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
+    currentUserRole = assignedRole;
+    currentTrainerName = email;
 
-    if (role === "receptionist" || role === "manager") {
+    if (assignedRole === "receptionist" || assignedRole === "manager") {
       document
         .getElementById("openAddCustomerModal")
-        .classList.remove("hidden");
+        ?.classList.remove("hidden");
     } else {
-      document.getElementById("openAddCustomerModal").classList.add("hidden");
+      document.getElementById("openAddCustomerModal")?.classList.add("hidden");
     }
 
     fetchCustomers();
-  } else {
-    alert("Invalid username or password for " + role);
+  } catch (error) {
+    alert("Login failed: " + error.message);
   }
 };
 
@@ -113,7 +147,7 @@ window.addEventListener("click", (e) => {
 });
 
 function fetchCustomers() {
-  const customerRef = ref(db, "customers/");
+  const customerRef = ref(db, "clients/");
   onValue(customerRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
@@ -188,54 +222,6 @@ document.getElementById("searchInput").addEventListener("input", () => {
   displayTable();
 });
 
-// function displayTable() {
-//   const tbody = document.querySelector("#customerTable tbody");
-//   tbody.innerHTML = "";
-
-//   const start = (currentPage - 1) * rowsPerPage;
-//   const end = start + rowsPerPage;
-//   const pageData = filteredData.slice(start, end);
-
-//   pageData.forEach((customer, index) => {
-//     const row = document.createElement("tr");
-
-//     if (currentUserRole === "manager") {
-//       document.getElementById("tableActionsHeader")?.classList.remove("hidden");
-//     } else {
-//       document.getElementById("tableActionsHeader")?.classList.add("hidden");
-//     }
-
-//     let actions = "";
-//     if (currentUserRole === "manager") {
-//       actions = `
-//         <td class="action-buttons">
-//           <button class="edit-btn" onclick="editCustomer(${index})">Edit</button>
-//           <button class="delete-btn" onclick="deleteCustomer(${index})">Delete</button>
-//         </td>
-//       `;
-//     }
-
-//     row.innerHTML = `
-//       <td>${customer.name || ""}</td>
-//       <td>${customer.gender || ""}</td>
-//       <td>${customer.age || ""}</td>
-//       <td>${customer.phone?.personal || ""}</td>
-//       <td>${customer.phone?.emergency || ""}</td>
-//       <td>${customer.address || ""}</td>
-//       <td>${customer.plan_type || ""}</td>
-//       <td>${customer.last_payment || ""}</td>
-//       <td>${customer.subscription_type || ""}</td>
-//       <td>${(customer.equipment_borrowed || []).join(", ")}</td>
-//       <td>${customer.trainer || ""}</td>
-//       ${actions}
-//     `;
-
-//     tbody.appendChild(row);
-//   });
-
-//   renderPagination();
-// }
-
 function displayTable() {
   const thead = document.querySelector("#customerTable thead tr");
   const tbody = document.querySelector("#customerTable tbody");
@@ -274,7 +260,7 @@ function displayTable() {
     ? allHeaders.filter((h) => trainerHeaders.includes(h.key))
     : allHeaders;
 
-  // Build thead
+  // Build Thead
   headersToUse.forEach((h) => {
     const th = document.createElement("th");
     th.textContent = h.label;
