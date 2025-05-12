@@ -5,5 +5,8 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [{ "src": "/(.*)", "dest": "/index.html" }]
+  "routes": [{ "src": "/(.*)", "dest": "/index.html" }],
+  "scripts": {
+    "vercel-build": "node inject-env.js"
+  }
 }
