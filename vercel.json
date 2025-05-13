@@ -1,9 +1,6 @@
 {
-  "builds": [
-    {
-      "src": "inject-env.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [{ "src": "/(.*)", "dest": "/index.html" }]
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
