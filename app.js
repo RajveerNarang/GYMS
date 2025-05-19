@@ -30,15 +30,6 @@ let currentTrainerName = "";
 let isEditing = false;
 let editIndex = null;
 
-fetch("/api/firebase-config")
-  .then((res) => res.json())
-  .then((config) => {
-    firebase.initializeApp(config);
-  })
-  .catch((err) => {
-    console.error("Failed to load Firebase config", err);
-  });
-
 function sortTable(key) {
   const keys = key.split(".");
   const getValue = (obj) => keys.reduce((val, k) => val?.[k], obj);

@@ -1,15 +1,7 @@
 {
-  "name": "gyms",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
   "scripts": {
-    "vercel-build": "node inject-env.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "vercel-build": "node inject-env.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "dotenv": "^16.5.0"
   }
